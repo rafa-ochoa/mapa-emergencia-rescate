@@ -12,6 +12,7 @@ import {
   type ReactNode,
 } from "react";
 import MissingPersonForm, {
+  type MissingReportType,
   type MissingPersonPayload,
 } from "./MissingPersonForm";
 import MissingPersonDetail from "./MissingPersonDetail";
@@ -191,6 +192,8 @@ function HorizontalScrollRow({
 export default function MissingPersonsCarousel() {
   const [activeTab, setActiveTab] = useState<DirectoryTab>("personas");
   const [showForm, setShowForm] = useState(false);
+  const [formReportType, setFormReportType] =
+    useState<MissingReportType>("missing");
   const [formSessionKey, setFormSessionKey] = useState(0);
   const personasRef = useRef<PersonasPreviewHandle>(null);
 
@@ -199,7 +202,8 @@ export default function MissingPersonsCarousel() {
     window.history.replaceState(null, "", hashForTab(tab));
   }, []);
 
-  const openReportForm = useCallback(() => {
+  const openReportForm = useCallback((reportType: MissingReportType) => {
+    setFormReportType(reportType);
     setFormSessionKey((k) => k + 1);
     setShowForm(true);
   }, []);
@@ -250,13 +254,23 @@ export default function MissingPersonsCarousel() {
       />
       <div className="mx-auto w-full max-w-[1120px] px-4 py-8 sm:px-6 sm:py-10">
         <div className="-mx-4 mb-7 border-b-2 border-[var(--eborder)] px-4 sm:mx-0 sm:px-0">
-          <div className="flex py-3 sm:justify-end">
+          <div className="grid gap-2 py-3 sm:flex sm:items-center sm:justify-end">
+            <span className="text-sm font-semibold text-slate-500">
+              Reportar:
+            </span>
             <button
               type="button"
-              onClick={openReportForm}
-              className="e-btn e-btn-primary w-full px-5 py-2.5 sm:w-auto"
+              onClick={() => openReportForm("missing")}
+              className="e-btn w-full border-red-600 bg-red-600 px-5 py-2.5 text-white hover:bg-red-700 sm:w-auto"
             >
-              <span aria-hidden>＋</span> Quiero reportar persona
+              Persona desaparecida
+            </button>
+            <button
+              type="button"
+              onClick={() => openReportForm("found")}
+              className="e-btn w-full border-indigo-600 bg-indigo-600 px-5 py-2.5 text-white hover:bg-indigo-700 sm:w-auto"
+            >
+              Persona encontrada
             </button>
           </div>
           <div
@@ -272,7 +286,7 @@ export default function MissingPersonsCarousel() {
               aria-controls="panel-personas"
               data-active={activeTab === "personas"}
               onClick={() => selectTab("personas")}
-              className="e-tab-label flex flex-1 items-center justify-center sm:flex-none"
+              className="e-tab-label flex flex-1 items-center justify-center"
             >
               Personas
             </button>
@@ -284,7 +298,7 @@ export default function MissingPersonsCarousel() {
               aria-controls="panel-hospitales"
               data-active={activeTab === "hospitales"}
               onClick={() => selectTab("hospitales")}
-              className="e-tab-label flex flex-1 items-center justify-center sm:flex-none"
+              className="e-tab-label flex flex-1 items-center justify-center"
             >
               Hospitales
             </button>
@@ -311,13 +325,9 @@ export default function MissingPersonsCarousel() {
 
         {showForm && (
           <MissingPersonForm
-            key={`${activeTab}-${formSessionKey}`}
-            initialReportType={
-              activeTab === "hospitales" ? "found" : "missing"
-            }
-            initialFoundPlace={
-              activeTab === "hospitales" ? "hospital" : null
-            }
+            key={`${formReportType}-${formSessionKey}`}
+            initialReportType={formReportType}
+            initialFoundPlace={null}
             onCancel={() => setShowForm(false)}
             onSubmit={handleFormSubmit}
           />
