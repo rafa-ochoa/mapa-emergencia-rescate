@@ -362,7 +362,7 @@ const PersonasPreview = forwardRef<PersonasPreviewHandle>(
       if (debouncedQuery.trim().length >= MIN_SEARCH_LEN) {
         params.set("q", debouncedQuery.trim());
       }
-      const res = await fetch(`/api/missing?${params}`, { cache: "no-store" });
+      const res = await fetch(`/api/missing?${params}`, { cache: "no-cache" });
       if (!res.ok) return;
       const data = await res.json();
       setPeople(data.people ?? []);
@@ -387,7 +387,7 @@ const PersonasPreview = forwardRef<PersonasPreviewHandle>(
   const fetchFoundTotal = useCallback(async () => {
     try {
       const res = await fetch("/api/missing?status=found&pageSize=1", {
-        cache: "no-store",
+        cache: "no-cache",
       });
       if (!res.ok) return;
       const data = await res.json();
