@@ -82,7 +82,6 @@ export default function ChatPanel() {
     const stored = localStorage.getItem(ROLE_STORAGE_KEY);
     return isValidChatRole(stored ?? "") ? (stored as ChatRole) : "citizen";
   });
-  const [showRolePicker, setShowRolePicker] = useState(false);
   const [text, setText] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [adminToken, setAdminToken] = useState<string | null>(null);
@@ -131,7 +130,6 @@ export default function ChatPanel() {
   const handleRoleChange = useCallback((next: ChatRole) => {
     setRole(next);
     localStorage.setItem(ROLE_STORAGE_KEY, next);
-    setShowRolePicker(false);
   }, []);
 
   const handleSend = useCallback(
@@ -275,86 +273,44 @@ export default function ChatPanel() {
           confirmar.
         </p>
 
-        {/* Filtros por rol */}
-        <div className="mt-4 flex flex-wrap gap-2">
-          <button
-            type="button"
-            onClick={() => setRoleFilter("all")}
-            className={`rounded-full border px-3 py-1 text-xs font-medium transition ${
-              roleFilter === "all"
-                ? "border-slate-900 bg-slate-900 text-white"
-                : "border-slate-200 bg-slate-50 text-slate-600 hover:border-slate-300"
-            }`}
-          >
-            Todos
-          </button>
-          {CHAT_ROLE_KEYS.map((r) => {
-            const m = CHAT_ROLES[r];
-            const active = roleFilter === r;
-            return (
-              <button
-                key={r}
-                type="button"
-                onClick={() => setRoleFilter(r)}
-                className={`inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-medium transition ${
-                  active
-                    ? "border-slate-900 bg-slate-900 text-white"
-                    : "border-slate-200 bg-slate-50 text-slate-600 hover:border-slate-300"
-                }`}
-              >
-                <span aria-hidden>{m.icon}</span>
-                <span>{m.label}</span>
-              </button>
-            );
-          })}
-        </div>
+        <div className="mt-5 flex flex-col gap-2 sm:flex-row sm:items-center">
+          <h2 className="text-sm font-semibold text-slate-500">
+            Mensajes
+          </h2>
 
-        {/* Selector de rol propio */}
-        <div className="mt-3 flex flex-wrap items-center gap-2 rounded-lg border border-slate-100 bg-slate-50 px-3 py-2 text-sm">
-          <span className="text-slate-500">Participas como:</span>
-          <button
-            type="button"
-            onClick={() => setShowRolePicker((v) => !v)}
-            className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-sm font-semibold text-slate-900 hover:bg-slate-100"
-            style={{ color: CHAT_ROLES[role].color }}
-          >
-            <span>{CHAT_ROLES[role].icon}</span>
-            {CHAT_ROLES[role].label}
-            <span aria-hidden>▾</span>
-          </button>
-          {showRolePicker && (
-            <div className="mt-2 w-full">
-              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-                {CHAT_ROLE_KEYS.map((r) => {
-                  const m = CHAT_ROLES[r];
-                  return (
-                    <button
-                      key={r}
-                      type="button"
-                      onClick={() => handleRoleChange(r)}
-                      className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-left text-sm transition ${
-                        role === r
-                          ? "border-slate-900 bg-slate-900 text-white"
-                          : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
-                      }`}
-                    >
-                      <span aria-hidden>{m.icon}</span>
-                      <div>
-                        <p className="font-semibold">{m.label}</p>
-                        <p
-                          className={`text-[10px] ${
-                            role === r ? "text-slate-300" : "text-slate-500"
-                          }`}
-                        >
-                          {m.description}
-                        </p>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
+          {/* Filtros por rol */}
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => setRoleFilter("all")}
+              className={`rounded-full border px-3 py-1 text-xs font-medium transition ${
+                roleFilter === "all"
+                  ? "border-slate-900 bg-slate-900 text-white"
+                  : "border-slate-200 bg-slate-50 text-slate-600 hover:border-slate-300"
+              }`}
+            >
+              Todos
+            </button>
+            {CHAT_ROLE_KEYS.map((r) => {
+              const m = CHAT_ROLES[r];
+              const active = roleFilter === r;
+              return (
+                <button
+                  key={r}
+                  type="button"
+                  onClick={() => setRoleFilter(r)}
+                  className={`inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-medium transition ${
+                    active
+                      ? "border-slate-900 bg-slate-900 text-white"
+                      : "border-slate-200 bg-slate-50 text-slate-600 hover:border-slate-300"
+                  }`}
+                >
+                  <span aria-hidden>{m.icon}</span>
+                  <span>{m.label}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         <div
@@ -375,7 +331,48 @@ export default function ChatPanel() {
           )}
         </div>
 
-        <form onSubmit={handleSend} className="mt-3 space-y-2">
+        <form
+          onSubmit={handleSend}
+          className="mt-4 space-y-3 border-t border-slate-200 pt-4"
+        >
+          <h2 className="text-base font-semibold text-slate-900">
+            Escribir mensaje
+          </h2>
+
+          {/* Selector de rol propio */}
+          <div className="text-sm">
+            <span className="text-slate-500">Enviar como:</span>
+            <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3">
+              {CHAT_ROLE_KEYS.map((r) => {
+                const m = CHAT_ROLES[r];
+                return (
+                  <button
+                    key={r}
+                    type="button"
+                    onClick={() => handleRoleChange(r)}
+                    className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-left text-sm transition ${
+                      role === r
+                        ? "border-slate-900 bg-slate-900 text-white"
+                        : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
+                    }`}
+                  >
+                    <span aria-hidden>{m.icon}</span>
+                    <div>
+                      <p className="font-semibold">{m.label}</p>
+                      <p
+                        className={`text-[10px] ${
+                          role === r ? "text-slate-300" : "text-slate-500"
+                        }`}
+                      >
+                        {m.description}
+                      </p>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           <input
             type="text"
             value={name}
@@ -405,7 +402,7 @@ export default function ChatPanel() {
             </div>
           )}
 
-          <div className="flex items-end gap-2">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
             <textarea
               ref={textareaRef}
               value={text}
@@ -416,16 +413,16 @@ export default function ChatPanel() {
                   void handleSend(e);
                 }
               }}
-              rows={2}
+              rows={3}
               maxLength={MAX_TEXT}
               placeholder="Escribe un mensaje…"
-              className="flex-1 resize-none rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-900"
+              className="min-h-24 flex-1 resize-none rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-900"
             />
             <button
               type="submit"
               data-track="chat_send_clicked"
               disabled={sending || !text.trim()}
-              className="h-[42px] shrink-0 rounded-lg bg-slate-900 px-4 text-sm font-semibold text-white hover:bg-slate-800 disabled:opacity-50"
+              className="h-[42px] w-full shrink-0 rounded-lg bg-slate-900 px-4 text-sm font-semibold text-white hover:bg-slate-800 disabled:opacity-50 sm:w-auto"
             >
               {sending ? "…" : "Enviar"}
             </button>
