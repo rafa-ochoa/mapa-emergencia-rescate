@@ -249,11 +249,20 @@ export default function MissingPersonsCarousel() {
         aria-hidden
       />
       <div className="mx-auto w-full max-w-[1120px] px-4 py-8 sm:px-6 sm:py-10">
-        <div className="-mx-4 mb-7 flex flex-wrap items-end justify-between gap-3 border-b-2 border-[var(--eborder)] px-4 sm:mx-0 sm:px-0">
+        <div className="-mx-4 mb-7 border-b-2 border-[var(--eborder)] px-4 sm:mx-0 sm:px-0">
+          <div className="flex py-3 sm:justify-end">
+            <button
+              type="button"
+              onClick={openReportForm}
+              className="e-btn e-btn-primary w-full px-5 py-2.5 sm:w-auto"
+            >
+              <span aria-hidden>＋</span> Quiero reportar persona
+            </button>
+          </div>
           <div
             role="tablist"
             aria-label="Directorio de personas y hospitales"
-            className="flex min-w-0 flex-1"
+            className="flex min-w-0"
           >
             <button
               type="button"
@@ -280,13 +289,6 @@ export default function MissingPersonsCarousel() {
               Hospitales
             </button>
           </div>
-          <button
-            type="button"
-            onClick={openReportForm}
-            className="e-btn e-btn-primary mb-1 shrink-0 px-5 py-2.5"
-          >
-            <span aria-hidden>＋</span> Quiero reportar
-          </button>
         </div>
 
         {activeTab === "personas" ? (

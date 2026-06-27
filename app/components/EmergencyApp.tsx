@@ -30,6 +30,7 @@ import {
 
 const DUPLICATE_RADIUS_M = 50;
 const DUPLICATE_WINDOW_MS = 24 * 60 * 60 * 1000;
+const OPEN_EMERGENCY_REPORT_EVENT = "open-emergency-report";
 
 const MapView = dynamic(() => import("./MapView"), {
 	ssr: false,
@@ -427,6 +428,19 @@ export default function EmergencyApp() {
 		setReportOpen(true);
 	}, []);
 
+	useEffect(() => {
+		const openEmergencyReport = () => {
+			document
+				.getElementById("mapa")
+				?.scrollIntoView({ behavior: "smooth", block: "start" });
+			startReport();
+		};
+
+		window.addEventListener(OPEN_EMERGENCY_REPORT_EVENT, openEmergencyReport);
+		return () =>
+			window.removeEventListener(OPEN_EMERGENCY_REPORT_EVENT, openEmergencyReport);
+	}, [startReport]);
+
 	const closeReport = useCallback(() => {
 		setReportOpen(false);
 		setDraft(null);
@@ -800,7 +814,7 @@ export default function EmergencyApp() {
 								onClick={startReport}
 								className="shrink-0 rounded-full bg-red-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-red-700"
 							>
-								+ Reportar
+								Reportar Información
 							</button>
 						</div>
 					</div>
