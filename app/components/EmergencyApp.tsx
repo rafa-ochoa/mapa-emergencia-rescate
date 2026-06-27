@@ -642,11 +642,32 @@ export default function EmergencyApp() {
 			id="mapa"
 			className="mx-auto w-full max-w-[1760px] px-4 py-10 sm:px-6 lg:px-10"
 		>
-			<div className="mx-auto mb-5 w-full max-w-[1120px]">
-				<h2 className="qi-h2">Mapa de reportes en tiempo real</h2>
-				<p className="mt-1 text-sm text-[var(--etext2)]">
-					Toca un punto del mapa para reportar o ver el estado de una zona.
-				</p>
+			<div className="mx-auto mb-5 flex w-full max-w-[1760px] flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+				<div>
+					<h2 className="qi-h2">Mapa de reportes en tiempo real</h2>
+					<p className="mt-1 text-sm text-[var(--etext2)]">
+						Toca un punto del mapa para reportar o ver el estado de una zona.
+					</p>
+				</div>
+				<div className="hidden shrink-0 items-center gap-2 sm:flex">
+					<button
+						type="button"
+						onClick={shareMap}
+						aria-label="Compartir el mapa"
+						title="Compartir el mapa"
+						className="inline-flex min-h-10 items-center gap-1.5 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50"
+					>
+						<span aria-hidden>{shareCopied ? "✓" : "🔗"}</span>
+						<span>{shareCopied ? "Copiado" : "Compartir"}</span>
+					</button>
+					<button
+						type="button"
+						onClick={startReport}
+						className="inline-flex min-h-10 items-center rounded-full bg-red-600 px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-red-700"
+					>
+						Reportar Información
+					</button>
+				</div>
 			</div>
 			{pendingCount > 0 && (
 				<div
@@ -805,9 +826,10 @@ export default function EmergencyApp() {
 								onClick={shareMap}
 								aria-label="Compartir el mapa"
 								title="Compartir el mapa"
-								className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-base text-slate-600 transition hover:bg-slate-100"
+								className="inline-flex h-10 shrink-0 items-center gap-1.5 rounded-full px-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-100"
 							>
-								{shareCopied ? "✓" : "🔗"}
+								<span aria-hidden>{shareCopied ? "✓" : "🔗"}</span>
+								<span>{shareCopied ? "Copiado" : "Compartir"}</span>
 							</button>
 							<button
 								type="button"
