@@ -398,8 +398,13 @@ export default function MissingPersonForm({
                 }`}
               >
                 <SearchIcon className="e-report-modal__type-icon" />
-                <span className="e-report-modal__type-title">
-                  Persona desaparecida
+                <span className="e-report-modal__type-copy">
+                  <span className="e-report-modal__type-title">
+                    Persona desaparecida
+                  </span>
+                  <span className="e-report-modal__type-hint">
+                    No sé dónde está
+                  </span>
                 </span>
               </button>
               <button
@@ -413,8 +418,13 @@ export default function MissingPersonForm({
                 }`}
               >
                 <PinIcon className="e-report-modal__type-icon" />
-                <span className="e-report-modal__type-title">
-                  Persona encontrada
+                <span className="e-report-modal__type-copy">
+                  <span className="e-report-modal__type-title">
+                    Persona encontrada
+                  </span>
+                  <span className="e-report-modal__type-hint">
+                    Sé dónde está o la vi
+                  </span>
                 </span>
               </button>
             </div>
