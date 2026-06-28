@@ -180,24 +180,20 @@ export default function EmergencyApp() {
 		return () => clearInterval(id);
 	}, []);
 
-	// Esc cierra en cascada: primero "elegir en el mapa", luego el formulario de
-	// reporte, luego el login de admin. Usamos fase de CAPTURA porque Leaflet
-	// tiene su propio handler de teclado en el contenedor del mapa que se come el
-	// Escape; capturar en window lo intercepta antes, sin depender del foco.
+	// Esc cierra modos que viven fuera del modal. El formulario de reporte maneja
+	// su propio Escape; aquí queda "elegir en el mapa" porque Leaflet puede comerse
+	// el evento desde el contenedor del mapa.
 	useEffect(() => {
 		const onKey = (event: KeyboardEvent) => {
 			if (event.key !== "Escape") return;
 			if (placing) setPlacing(false);
-			else if (reportOpen) {
-				setReportOpen(false);
-				setDraft(null);
-			} else if (showAdminLogin) setShowAdminLogin(false);
+			else if (showAdminLogin) setShowAdminLogin(false);
 			else return;
 			event.stopPropagation();
 		};
 		window.addEventListener("keydown", onKey, true);
 		return () => window.removeEventListener("keydown", onKey, true);
-	}, [placing, reportOpen, showAdminLogin]);
+	}, [placing, showAdminLogin]);
 
 	const loginAdmin = useCallback((token: string) => {
 		sessionStorage.setItem(ADMIN_STORAGE_KEY, token);

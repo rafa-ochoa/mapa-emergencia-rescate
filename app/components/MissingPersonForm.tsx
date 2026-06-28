@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { trackEvent } from "./openpanel";
+import { useModalFocus } from "./useModalFocus";
 
 export type MissingReportType = "missing" | "found";
 export type FoundPlace = "hospital" | "street";
@@ -211,6 +212,7 @@ export default function MissingPersonForm({
   const [submitting, setSubmitting] = useState(false);
   const [consent, setConsent] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const isMissing = reportType === "missing";
@@ -222,15 +224,12 @@ export default function MissingPersonForm({
   useEffect(() => {
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onCancel();
-    };
-    document.addEventListener("keydown", onKey);
     return () => {
       document.body.style.overflow = prev;
-      document.removeEventListener("keydown", onKey);
     };
-  }, [onCancel]);
+  }, []);
+
+  useModalFocus(dialogRef, onCancel, mounted);
 
   const handleFile = useCallback(
     async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -346,14 +345,23 @@ export default function MissingPersonForm({
   return createPortal(
     <div
       className="e-report-modal-backdrop fixed inset-0 z-[2000] flex items-start justify-center overflow-y-auto bg-black/55 p-4 sm:p-6"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="report-modal-title"
       onClick={(event) => {
         if (event.target === event.currentTarget) onCancel();
       }}
     >
-      <div className="e-report-modal w-full max-w-[560px] max-h-[calc(100vh-3rem)] overflow-y-auto rounded-2xl bg-white shadow-2xl">
+      <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="report-modal-title"
+        aria-describedby={
+          error
+            ? "report-modal-description report-form-error"
+            : "report-modal-description"
+        }
+        tabIndex={-1}
+        className="e-report-modal w-full max-w-[560px] max-h-[calc(100vh-3rem)] overflow-y-auto rounded-2xl bg-white shadow-2xl outline-none"
+      >
         <header className="e-report-modal__header flex items-start justify-between gap-4 border-b border-[var(--eborder)] px-6 pb-4 pt-5">
           <div>
             <h2
@@ -362,7 +370,10 @@ export default function MissingPersonForm({
             >
               Reportar persona desaparecida o encontrada
             </h2>
-            <p className="e-report-modal__subtitle mt-1.5 text-[13px] leading-snug text-[var(--etext2)]">
+            <p
+              id="report-modal-description"
+              className="e-report-modal__subtitle mt-1.5 text-[13px] leading-snug text-[var(--etext2)]"
+            >
               Comparte los datos para que alguien pueda ayudar a ubicarla o
               reunirla con su familia.
             </p>
@@ -439,6 +450,7 @@ export default function MissingPersonForm({
               type="file"
               accept="image/jpeg,image/png,image/webp"
               onChange={handleFile}
+              tabIndex={-1}
               className="sr-only"
             />
             <button
@@ -486,6 +498,7 @@ export default function MissingPersonForm({
                 onChange={(e) => setName(e.target.value)}
                 maxLength={120}
                 required
+                data-modal-autofocus
                 placeholder="Ej. María Fernanda Rangel"
                 className="e-input"
               />
@@ -716,7 +729,15 @@ export default function MissingPersonForm({
             </label>
           </div>
 
-          {error && <p className="text-sm text-red-600">{error}</p>}
+          {error && (
+            <p
+              id="report-form-error"
+              role="alert"
+              className="text-sm text-red-600"
+            >
+              {error}
+            </p>
+          )}
 
           <footer className="e-report-modal__footer flex justify-end gap-2.5 pt-1">
             <button

@@ -5,6 +5,7 @@ import MissingFoundForm, {
   type MissingFoundPayload,
 } from "./MissingFoundForm";
 import ImageZoomLightbox from "./ImageZoomLightbox";
+import { useModalFocus } from "./useModalFocus";
 
 interface MissingPerson {
   id: string;
@@ -78,6 +79,7 @@ export default function MissingPersonDetail({
   const [copied, setCopied] = useState(false);
   const [shareError, setShareError] = useState<string | null>(null);
   const [zoomOpen, setZoomOpen] = useState(false);
+  const dialogRef = useRef<HTMLDivElement>(null);
   const touchStartX = useRef<number | null>(null);
 
   const currentIndex =
@@ -107,10 +109,6 @@ export default function MissingPersonDetail({
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (showFoundForm) return;
-      if (e.key === "Escape") {
-        onClose();
-        return;
-      }
       if (e.key === "ArrowLeft") {
         e.preventDefault();
         goPrev();
@@ -129,6 +127,8 @@ export default function MissingPersonDetail({
       document.body.style.overflow = prev;
     };
   }, [goNext, goPrev, onClose, showFoundForm]);
+
+  useModalFocus(dialogRef, onClose, !showFoundForm && !zoomOpen);
 
   const isFound = person.status === "found";
   const url = shareUrl(person);
@@ -183,17 +183,19 @@ export default function MissingPersonDetail({
 
   return (
     <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="missing-detail-title"
       className="e-person-modal-backdrop"
       onClick={onClose}
     >
       <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal={showFoundForm ? "false" : "true"}
+        aria-labelledby="missing-detail-title"
+        tabIndex={-1}
         onClick={(e) => e.stopPropagation()}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
-        className="e-person-modal"
+        className="e-person-modal outline-none"
       >
         <button
           type="button"

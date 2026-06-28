@@ -906,9 +906,9 @@ export function HospitalDetailOverlay({
                 <p className="mt-1 text-sm text-slate-600">{hospitalLocation}</p>
               )}
               {detailHospital.address && (
-                <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">
+                <address className="mt-2 max-w-3xl not-italic text-sm leading-relaxed text-slate-600">
                   {detailHospital.address}
-                </p>
+                </address>
               )}
             </div>
             <button

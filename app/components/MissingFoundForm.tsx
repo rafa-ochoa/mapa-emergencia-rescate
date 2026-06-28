@@ -2,6 +2,7 @@
 
 import { useCallback, useRef, useState } from "react";
 import { trackEvent } from "./openpanel";
+import { useModalFocus } from "./useModalFocus";
 
 export interface MissingFoundPayload {
   note: string;
@@ -47,7 +48,10 @@ export default function MissingFoundForm({
   const [processing, setProcessing] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  useModalFocus(dialogRef, onCancel);
 
   const handleFile = useCallback(
     async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -100,15 +104,22 @@ export default function MissingFoundForm({
 
   return (
     <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="found-title"
       onClick={onCancel}
       className="fixed inset-0 z-[2100] flex items-end justify-center bg-slate-900/60 p-0 sm:items-center sm:p-4"
     >
       <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="found-title"
+        aria-describedby={
+          error
+            ? "found-description found-form-error"
+            : "found-description"
+        }
+        tabIndex={-1}
         onClick={(e) => e.stopPropagation()}
-        className="max-h-[92vh] w-full max-w-md overflow-y-auto rounded-t-2xl bg-white p-5 shadow-xl sm:rounded-2xl sm:p-6"
+        className="max-h-[92vh] w-full max-w-md overflow-y-auto rounded-t-2xl bg-white p-5 shadow-xl outline-none sm:rounded-2xl sm:p-6"
       >
         <div className="flex items-start justify-between gap-3">
           <h3 id="found-title" className="text-lg font-bold text-slate-900">
@@ -124,7 +135,7 @@ export default function MissingFoundForm({
             ×
           </button>
         </div>
-        <p className="mt-1 text-sm text-slate-600">
+        <p id="found-description" className="mt-1 text-sm text-slate-600">
           Antes de quitar a <strong>{personName}</strong> del listado,
           ayúdanos a confirmar el contacto con una breve explicación. Esto
           previene cierres falsos.
@@ -146,6 +157,7 @@ export default function MissingFoundForm({
               rows={4}
               maxLength={600}
               required
+              data-modal-autofocus
               placeholder="Ej: Hablé por teléfono con su hermana, está en el refugio de Chacao. O: lo vi en persona en el centro médico."
               className="mt-1 w-full resize-none rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-900"
             />
@@ -162,6 +174,7 @@ export default function MissingFoundForm({
               type="file"
               accept="image/*"
               onChange={handleFile}
+              tabIndex={-1}
               className="hidden"
               required
             />
@@ -211,7 +224,11 @@ export default function MissingFoundForm({
           </div>
 
           {error && (
-            <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+            <p
+              id="found-form-error"
+              role="alert"
+              className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700"
+            >
               {error}
             </p>
           )}

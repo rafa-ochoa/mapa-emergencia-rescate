@@ -505,12 +505,10 @@ const PersonasPreview = forwardRef<PersonasPreviewHandle>(
               }
             : {}),
         }}
-        role="list"
       >
         {people.length === 0 ? (
           <div
             className="e-card col-span-full flex flex-col items-center justify-center gap-1 border-dashed p-8 text-center text-[var(--etext2)]"
-            role="listitem"
           >
             <span className="text-2xl">🙏</span>
             <p className="text-sm font-medium">
@@ -641,7 +639,6 @@ function MissingPersonCard({
       type="button"
       onClick={onOpen}
       className={`e-person-card${isFound ? " e-person-card--found" : ""}`}
-      role="listitem"
     >
       <div className="e-person-card__media">
         <span

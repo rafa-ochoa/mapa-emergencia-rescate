@@ -1,8 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { REPORT_TYPES, REPORT_TYPE_KEYS, type ReportType } from "@/lib/types";
 import { trackEvent } from "./openpanel";
+import { useModalFocus } from "./useModalFocus";
 
 interface ReportFormProps {
   /** Ubicación elegida, o null mientras el usuario aún no la define. */
@@ -118,11 +119,7 @@ export default function ReportForm({
   onSubmit,
 }: ReportFormProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
-  // Al abrir (o al volver de "elegir en el mapa") movemos el foco al modal para
-  // que Esc lo cierre de inmediato, y por accesibilidad.
-  useEffect(() => {
-    if (!hidden) dialogRef.current?.focus({ preventScroll: true });
-  }, [hidden]);
+  useModalFocus(dialogRef, onCancel, !hidden);
 
   const [type, setType] = useState<ReportType>("critical");
   const [place, setPlace] = useState("");
@@ -226,12 +223,12 @@ export default function ReportForm({
       className={`fixed inset-0 z-[2000] flex items-end justify-center bg-slate-900/60 p-0 sm:items-center sm:p-4 ${
         hidden ? "hidden" : ""
       }`}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="form-title"
     >
       <div
         ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="form-title"
         tabIndex={-1}
         className="max-h-[92vh] w-full max-w-lg overflow-y-auto rounded-t-2xl bg-[var(--esurf)] p-5 shadow-xl outline-none sm:rounded-2xl sm:p-6"
       >
