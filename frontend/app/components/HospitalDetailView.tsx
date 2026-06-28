@@ -15,6 +15,7 @@ import {
   type PublicHospitalSupplyStatus,
   type PublicHospitalSupplySummary,
 } from "@/lib/hospitals-meta";
+import { apiGet, apiSend } from "@/lib/api";
 import { timeAgo } from "@/lib/format";
 
 const ADMIN_STORAGE_KEY = "emergency:adminToken";
@@ -25,6 +26,15 @@ interface Props {
   initialPatients: HospitalPatient[];
   embedded?: boolean;
   initialSupply?: PublicHospitalSupplySummary;
+}
+
+interface HospitalPatientsResponse {
+  hospital?: Hospital;
+  patients?: HospitalPatient[];
+}
+
+interface HospitalSupplyResponse {
+  supply?: PublicHospitalSupplySummary;
 }
 
 export default function HospitalDetailView({
@@ -59,25 +69,17 @@ export default function HospitalDetailView({
   const load = useCallback(async (manual = false) => {
     if (manual) setRefreshing(true);
     try {
-      const [res, supplyRes] = await Promise.all([
-        fetch(`/api/hospitals/${hospitalIdRef.current}/patients`, {
-          cache: "no-store",
-        }),
-        fetch(`/api/hospitals/${hospitalIdRef.current}/supplies`, {
-          cache: "no-store",
-        }),
+      const [data, supplyData] = await Promise.all([
+        apiGet<HospitalPatientsResponse>(
+          `/api/hospitals/${hospitalIdRef.current}/patients`,
+        ),
+        apiGet<HospitalSupplyResponse>(
+          `/api/hospitals/${hospitalIdRef.current}/supplies`,
+        ),
       ]);
-      if (!res.ok) throw new Error("No se pudieron cargar los pacientes.");
-      const data = await res.json();
       setPatients(data.patients ?? []);
       if (data.hospital) setHospital(data.hospital);
-      if (!supplyRes.ok) {
-        throw new Error("No se pudieron cargar los insumos hospitalarios.");
-      }
-      if (supplyRes.ok) {
-        const supplyData = await supplyRes.json();
-        setSupply(supplyData.supply ?? null);
-      }
+      setSupply(supplyData.supply ?? null);
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error al cargar.");
@@ -102,14 +104,17 @@ export default function HospitalDetailView({
   async function handleDelete(id: string) {
     if (!adminToken) return;
     if (!confirm("¿Eliminar este paciente?")) return;
-    const res = await fetch(
-      `/api/hospitals/${hospital.id}/patients/${id}`,
-      {
-        method: "DELETE",
-        headers: { "x-admin-token": adminToken },
-      },
-    );
-    if (res.ok) await load(true);
+    try {
+      await apiSend<{ ok: boolean }>(
+        "DELETE",
+        `/api/hospitals/${hospital.id}/patients/${id}`,
+        undefined,
+        { "x-admin-token": adminToken },
+      );
+      await load(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "No se pudo eliminar.");
+    }
   }
 
   const q = search.trim().toLowerCase();
