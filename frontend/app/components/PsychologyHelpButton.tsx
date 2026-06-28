@@ -25,6 +25,12 @@ export default function PsychologyHelpButton() {
   const psychologyUrl = psychologyHelpUrl();
   const psychologyIsExternal = !psychologyUrl.startsWith("mailto:");
 
+  const updateMenuTop = useCallback(() => {
+    const rect = rootRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    setMenuTop(Math.max(8, rect.bottom + 8));
+  }, []);
+
   useEffect(() => {
     let cancelled = false;
     fetch("/api/stats/psychology-help")
@@ -60,11 +66,6 @@ export default function PsychologyHelpButton() {
 
   useEffect(() => {
     if (!open) return;
-    const updateMenuTop = () => {
-      const rect = rootRef.current?.getBoundingClientRect();
-      if (!rect) return;
-      setMenuTop(Math.max(8, rect.bottom + 8));
-    };
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setOpen(false);
     };
@@ -84,7 +85,7 @@ export default function PsychologyHelpButton() {
       window.removeEventListener("resize", updateMenuTop);
       window.removeEventListener("scroll", updateMenuTop);
     };
-  }, [open]);
+  }, [open, updateMenuTop]);
 
   return (
     <div ref={rootRef} className="relative">
@@ -98,7 +99,7 @@ export default function PsychologyHelpButton() {
             "--psychology-menu-top": `${menuTop}px`,
           } as CSSProperties
         }
-        className={`fixed left-4 right-4 top-[var(--psychology-menu-top)] z-[1850] w-auto origin-top rounded-2xl border border-violet-200 bg-white p-4 shadow-2xl transition-all duration-200 sm:absolute sm:left-auto sm:right-0 sm:top-full sm:mt-2 sm:w-[min(calc(100vw-2rem),18rem)] sm:origin-top-right ${
+        className={`fixed left-4 right-4 top-[var(--psychology-menu-top)] z-[1850] w-auto origin-top rounded-2xl border border-violet-200 bg-white p-4 shadow-2xl transition-[opacity,transform] duration-200 sm:absolute sm:left-auto sm:right-0 sm:top-full sm:mt-2 sm:w-[min(calc(100vw-2rem),18rem)] sm:origin-top-right ${
           open
             ? "pointer-events-auto translate-y-0 scale-100 opacity-100"
             : "pointer-events-none -translate-y-1 scale-95 opacity-0"
@@ -148,9 +149,12 @@ export default function PsychologyHelpButton() {
         aria-label={
           open ? "Cerrar menú de apoyo psicológico" : "Abrir menú de apoyo psicológico"
         }
-        onClick={() => setOpen((value) => !value)}
+        onClick={() => {
+          if (!open) updateMenuTop();
+          setOpen((value) => !value);
+        }}
         data-track="psychology_menu_toggled"
-        className={`inline-flex h-9 min-h-0 shrink-0 items-center justify-center gap-1.5 rounded-full border-[1.5px] border-violet-300 bg-violet-600 px-3 text-sm font-bold text-white transition hover:bg-violet-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-400 max-[380px]:px-2 sm:text-base ${
+        className={`inline-flex h-9 min-h-0 w-[13rem] max-w-[calc(100vw-2rem)] shrink-0 items-center justify-center gap-1.5 rounded-full border-[1.5px] border-violet-300 bg-violet-600 px-3 text-sm font-bold text-white transition hover:bg-violet-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-400 max-[380px]:px-2 sm:w-auto sm:min-w-[13rem] sm:text-base ${
           open ? "" : "animate-pulse-soft"
         }`}
       >
@@ -158,11 +162,7 @@ export default function PsychologyHelpButton() {
           {open ? "×" : "💜"}
         </span>
         <span className="truncate">
-          {open ? (
-            "Cerrar"
-          ) : (
-            "Apoyo psicológico"
-          )}
+          {open ? "Cerrar" : "Apoyo psicológico"}
         </span>
       </button>
     </div>
