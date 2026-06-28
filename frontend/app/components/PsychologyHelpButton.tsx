@@ -1,6 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useId, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react";
 import { psychologyHelpUrl } from "@/lib/site";
 import { trackEvent } from "./openpanel";
 
@@ -12,6 +19,7 @@ function psychologyClickLabel(count: number): string {
 export default function PsychologyHelpButton() {
   const [open, setOpen] = useState(false);
   const [clickCount, setClickCount] = useState<number | null>(null);
+  const [menuTop, setMenuTop] = useState(0);
   const rootRef = useRef<HTMLDivElement>(null);
   const menuId = useId();
   const psychologyUrl = psychologyHelpUrl();
@@ -52,6 +60,11 @@ export default function PsychologyHelpButton() {
 
   useEffect(() => {
     if (!open) return;
+    const updateMenuTop = () => {
+      const rect = rootRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      setMenuTop(Math.max(8, rect.bottom + 8));
+    };
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setOpen(false);
     };
@@ -60,11 +73,16 @@ export default function PsychologyHelpButton() {
         setOpen(false);
       }
     };
+    updateMenuTop();
     document.addEventListener("keydown", onKey);
     document.addEventListener("mousedown", onClick);
+    window.addEventListener("resize", updateMenuTop);
+    window.addEventListener("scroll", updateMenuTop);
     return () => {
       document.removeEventListener("keydown", onKey);
       document.removeEventListener("mousedown", onClick);
+      window.removeEventListener("resize", updateMenuTop);
+      window.removeEventListener("scroll", updateMenuTop);
     };
   }, [open]);
 
@@ -75,7 +93,12 @@ export default function PsychologyHelpButton() {
         role="menu"
         aria-hidden={!open}
         inert={!open ? true : undefined}
-        className={`absolute right-0 top-full z-[1850] mt-2 w-[min(calc(100vw-2rem),18rem)] origin-top-right rounded-2xl border border-violet-200 bg-white p-4 shadow-2xl transition-all duration-200 ${
+        style={
+          {
+            "--psychology-menu-top": `${menuTop}px`,
+          } as CSSProperties
+        }
+        className={`fixed left-4 right-4 top-[var(--psychology-menu-top)] z-[1850] w-auto origin-top rounded-2xl border border-violet-200 bg-white p-4 shadow-2xl transition-all duration-200 sm:absolute sm:left-auto sm:right-0 sm:top-full sm:mt-2 sm:w-[min(calc(100vw-2rem),18rem)] sm:origin-top-right ${
           open
             ? "pointer-events-auto translate-y-0 scale-100 opacity-100"
             : "pointer-events-none -translate-y-1 scale-95 opacity-0"
