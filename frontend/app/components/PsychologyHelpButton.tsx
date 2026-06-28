@@ -127,7 +127,7 @@ export default function PsychologyHelpButton() {
         }
         onClick={() => setOpen((value) => !value)}
         data-track="psychology_menu_toggled"
-        className={`inline-flex h-9 min-h-0 shrink-0 items-center justify-center gap-1.5 rounded-full border-[1.5px] border-violet-300 bg-violet-600 px-3 text-xs font-bold text-white transition hover:bg-violet-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-400 ${
+        className={`inline-flex h-9 min-h-0 shrink-0 items-center justify-center gap-1.5 rounded-full border-[1.5px] border-violet-300 bg-violet-600 px-3 text-sm font-bold text-white transition hover:bg-violet-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-400 max-[380px]:px-2 sm:text-base ${
           open ? "" : "animate-pulse-soft"
         }`}
       >
@@ -138,10 +138,7 @@ export default function PsychologyHelpButton() {
           {open ? (
             "Cerrar"
           ) : (
-            <>
-              <span className="hidden lg:inline">Apoyo psicológico</span>
-              <span className="lg:hidden">Psico</span>
-            </>
+            "Apoyo psicológico"
           )}
         </span>
       </button>

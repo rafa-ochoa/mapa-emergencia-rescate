@@ -102,7 +102,10 @@ export default function HospitalDetailOverlay({
         >
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0">
-              <div className="flex flex-wrap items-center gap-2">
+              <h3 className="text-balance text-2xl font-bold tracking-tight text-slate-900">
+                {detailHospital.name}
+              </h3>
+              <div className="mt-3 flex flex-wrap items-center gap-2">
                 <span
                   className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide text-white"
                   style={{ background: zone.color }}
@@ -118,11 +121,8 @@ export default function HospitalDetailOverlay({
                   </span>
                 )}
               </div>
-              <h3 className="mt-3 text-balance text-2xl font-bold tracking-tight text-slate-900">
-                {detailHospital.name}
-              </h3>
               {hospitalLocation && (
-                <p className="mt-1 text-sm text-slate-600">{hospitalLocation}</p>
+                <p className="mt-3 text-sm text-slate-600">{hospitalLocation}</p>
               )}
               {detailHospital.address && (
                 <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">
@@ -134,7 +134,7 @@ export default function HospitalDetailOverlay({
               type="button"
               onClick={onClose}
               aria-label="Cerrar hospital"
-              className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white text-xl leading-none text-slate-600 shadow-sm transition hover:bg-slate-100"
+              className="e-dialog-close"
             >
               ×
             </button>
@@ -169,7 +169,7 @@ export default function HospitalDetailOverlay({
           </div>
         </div>
 
-        <div className="max-h-[72vh] overflow-y-auto p-4 sm:p-5">
+        <div className="max-h-[72vh] overflow-y-auto">
           {isLoading ? (
             <p className="rounded-xl border border-slate-200 bg-white px-5 py-8 text-center text-sm text-slate-500">
               Cargando pacientes…
@@ -182,6 +182,7 @@ export default function HospitalDetailOverlay({
             <HospitalDetailView
               hospital={detailHospital}
               initialPatients={patients}
+              embedded
             />
           )}
         </div>

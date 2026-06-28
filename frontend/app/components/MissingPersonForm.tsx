@@ -379,7 +379,7 @@ export default function MissingPersonForm({
             onClick={onCancel}
             data-track="missing_form_close"
             aria-label="Cerrar"
-            className="e-report-modal__close grid h-8 w-8 shrink-0 place-items-center rounded-lg border border-[var(--eborder)] bg-[var(--esurf2)] text-[var(--etext2)] hover:bg-[var(--einput)]"
+            className="e-dialog-close"
           >
             ×
           </button>

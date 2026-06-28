@@ -187,7 +187,7 @@ export default function TranslateWidget({
           aria-label="Cambiar idioma de la página"
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
-          className={`inline-flex h-9 min-h-0 shrink-0 items-center justify-center gap-1.5 rounded-full border-[1.5px] px-3 text-xs font-bold transition ${
+          className={`inline-flex h-9 min-h-0 shrink-0 items-center justify-center gap-1.5 rounded-full border-[1.5px] px-3 text-sm font-bold transition sm:text-base ${
             isTranslated
               ? "border-sky-300 bg-sky-50 text-sky-800"
               : "border-[var(--eborder)] bg-[var(--esurf)] text-[var(--etext2)] hover:bg-[var(--einput)]"

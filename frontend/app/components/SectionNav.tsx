@@ -107,31 +107,46 @@ function badgeValue(
   return null;
 }
 
-function NavHeaderActions() {
+function HeaderPrimaryActions({ className = "" }: { className?: string }) {
   return (
-    <div className="flex shrink-0 flex-nowrap items-center justify-end gap-2">
+    <div className={`flex min-w-0 items-center justify-center gap-2 max-[380px]:gap-1 ${className}`}>
       <PsychologyHelpButton />
       <a
         href={WHATSAPP_COMMUNITY_URL}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex h-9 min-h-0 items-center justify-center gap-1.5 rounded-full border-[1.5px] border-emerald-200 bg-emerald-50 px-3 text-xs font-bold text-emerald-800 transition hover:bg-emerald-100"
+        className="inline-flex h-9 min-h-0 shrink-0 items-center justify-center gap-1.5 rounded-full border-[1.5px] border-emerald-200 bg-emerald-50 px-3 text-sm font-bold text-emerald-800 transition hover:bg-emerald-100 max-[380px]:px-2 sm:text-base"
       >
         <span aria-hidden>💬</span>
-        <span className="hidden md:inline">Únete a la comunidad</span>
-        <span className="md:hidden">WhatsApp</span>
+        <span>Únete a la comunidad</span>
       </a>
+    </div>
+  );
+}
+
+function HeaderSecondaryActions({ className = "" }: { className?: string }) {
+  return (
+    <div className={`flex shrink-0 items-center justify-end gap-2 ${className}`}>
       <a
         href={X_PROFILE_URL}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Síguenos en X"
         title="Síguenos en X"
-        className="inline-flex h-9 w-9 min-h-0 items-center justify-center rounded-full border-[1.5px] border-[var(--eborder)] bg-[var(--esurf)] text-sm font-bold text-[var(--etext)] transition hover:bg-[var(--einput)]"
+        className="inline-flex h-9 w-9 min-h-0 shrink-0 items-center justify-center rounded-full border-[1.5px] border-[var(--eborder)] bg-[var(--esurf)] text-sm font-bold text-[var(--etext)] transition hover:bg-[var(--einput)]"
       >
         𝕏
       </a>
       <TranslateWidget nav />
+    </div>
+  );
+}
+
+function NavHeaderActions() {
+  return (
+    <div className="hidden min-w-0 flex-1 items-center justify-end gap-2 lg:flex">
+      <HeaderPrimaryActions className="justify-end" />
+      <HeaderSecondaryActions />
     </div>
   );
 }
@@ -146,10 +161,14 @@ export function HeroDesktopNav() {
       aria-label="Secciones principales"
       className="sticky top-0 z-[1800] w-full border-b-[1.5px] border-[var(--eborder)] bg-[var(--esurf)] shadow-sm"
     >
-      <div className="mx-auto flex h-[62px] max-w-[1120px] items-center justify-between gap-3 px-4 sm:px-6">
-        <SiteBrand
-          onClick={onHome ? () => scrollToSection("main") : undefined}
-        />
+      <div className="flex min-h-[62px] w-full flex-col gap-3 px-4 py-2 sm:px-6 lg:h-[62px] lg:flex-row lg:items-center lg:gap-3 lg:py-0 lg:pr-20">
+        <div className="flex w-full items-center justify-between gap-3 pr-10 lg:w-auto lg:flex-none lg:pr-0">
+          <SiteBrand
+            onClick={onHome ? () => scrollToSection("main") : undefined}
+          />
+          <HeaderSecondaryActions className="lg:hidden" />
+        </div>
+        <HeaderPrimaryActions className="flex-wrap lg:hidden" />
         <NavHeaderActions />
       </div>
     </nav>

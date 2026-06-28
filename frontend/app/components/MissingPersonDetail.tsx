@@ -200,7 +200,7 @@ export default function MissingPersonDetail({
           type="button"
           onClick={onClose}
           aria-label="Cerrar"
-          className="e-person-modal__close"
+          className="e-dialog-close e-person-modal__close"
         >
           ×
         </button>

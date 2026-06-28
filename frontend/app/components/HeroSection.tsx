@@ -35,19 +35,21 @@ function HeroAccessCard({
     <button
       type="button"
       onClick={onClick}
-      className="e-card-hover e-pulse-border group flex w-full flex-col items-center justify-center rounded-[16px] border-2 border-slate-200 bg-gradient-to-b from-white to-slate-50 text-center shadow-[0_2px_0_0_rgba(15,23,42,0.08),0_6px_16px_-4px_rgba(15,23,42,0.18)] transition-all hover:-translate-y-0.5 hover:[animation-play-state:paused] hover:border-[#1B3A6B]/40 hover:shadow-[0_4px_0_0_rgba(15,23,42,0.1),0_10px_24px_-6px_rgba(27,58,107,0.35)] active:translate-y-0 active:scale-[0.98] active:shadow-[0_1px_0_0_rgba(15,23,42,0.08),0_3px_8px_-4px_rgba(15,23,42,0.18)]"
+      className="e-card-hover e-pulse-border group flex w-full items-center justify-start gap-3 rounded-[16px] border-2 border-slate-200 bg-gradient-to-b from-white to-slate-50 text-left shadow-[0_2px_0_0_rgba(15,23,42,0.08),0_6px_16px_-4px_rgba(15,23,42,0.18)] transition-all hover:-translate-y-0.5 hover:[animation-play-state:paused] hover:border-[#1B3A6B]/40 hover:shadow-[0_4px_0_0_rgba(15,23,42,0.1),0_10px_24px_-6px_rgba(27,58,107,0.35)] active:translate-y-0 active:scale-[0.98] active:shadow-[0_1px_0_0_rgba(15,23,42,0.08),0_3px_8px_-4px_rgba(15,23,42,0.18)] sm:min-h-[178px] sm:flex-col sm:justify-center sm:gap-0 sm:text-center"
       style={{ padding: "clamp(14px, 2.2vw, 22px) clamp(12px, 1.6vw, 18px)" }}
     >
       <div
-        className="mb-2 sm:mb-2.5"
+        className="shrink-0 sm:mb-2.5"
         style={{ fontSize: "clamp(36px, 4.4vw, 52px)", lineHeight: 1 }}
         role="img"
         aria-hidden
       >
         {emoji}
       </div>
-      <div className="mb-1 text-[15px] font-bold text-slate-900 sm:text-[17px]">{title}</div>
-      <div className="text-[12px] leading-snug text-slate-600 sm:text-[13px]">{description}</div>
+      <div className="min-w-0 flex-1 sm:flex-none">
+        <div className="mb-1 text-[15px] font-bold leading-tight text-slate-900 sm:text-[17px]">{title}</div>
+        <div className="text-[12px] leading-snug text-slate-600 sm:text-[13px]">{description}</div>
+      </div>
     </button>
   );
 }
@@ -108,7 +110,7 @@ export default function HeroSection() {
             Da clic en una opción  para recibir o brindar ayuda.
           </p>
 
-          <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-5">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
             <HeroAccessCard
               emoji="🔎"
               title="Buscar personas"

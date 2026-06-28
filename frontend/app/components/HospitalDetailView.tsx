@@ -23,12 +23,14 @@ const POLL_MS = 30_000;
 interface Props {
   hospital: Hospital;
   initialPatients: HospitalPatient[];
+  embedded?: boolean;
   initialSupply?: PublicHospitalSupplySummary;
 }
 
 export default function HospitalDetailView({
   hospital: initialHospital,
   initialPatients,
+  embedded = false,
   initialSupply,
 }: Props) {
   const [hospital, setHospital] = useState<Hospital>(initialHospital);
@@ -122,10 +124,16 @@ export default function HospitalDetailView({
   const active = patients.filter((p) => p.status === "hospitalized").length;
 
   return (
-    <div className="space-y-4">
-      <HospitalSupplyPanel supply={supply} now={now} />
+    <div className={embedded ? "bg-white" : "space-y-4"}>
+      {!embedded && <HospitalSupplyPanel supply={supply} now={now} />}
 
-    <div className="rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <div
+        className={
+          embedded
+            ? "bg-white"
+            : "rounded-2xl border border-slate-200 bg-white shadow-sm"
+        }
+      >
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-5 py-3">
         <div className="flex items-center gap-3">
           <h2 className="text-lg font-bold text-slate-900">
@@ -246,7 +254,7 @@ export default function HospitalDetailView({
           onClose={() => setSelectedPatient(null)}
         />
       )}
-    </div>
+      </div>
     </div>
   );
 }

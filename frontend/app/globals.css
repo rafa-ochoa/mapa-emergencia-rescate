@@ -1306,23 +1306,37 @@ a:focus-visible,
 	animation: fadeUp 0.22s var(--qi-ease);
 }
 
-.e-person-modal__close {
-	position: absolute;
-	top: 0.875rem;
-	left: 0.875rem;
-	z-index: 3;
+.e-dialog-close {
 	display: grid;
+	flex-shrink: 0;
 	place-items: center;
 	width: 2.25rem;
 	height: 2.25rem;
-	border: none;
+	border: 1px solid var(--eborder);
 	border-radius: 999px;
 	background: rgba(255, 255, 255, 0.92);
-	color: var(--etext);
+	color: var(--etext2);
 	font-size: 1.125rem;
 	line-height: 1;
 	cursor: pointer;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+	transition:
+		background 0.16s var(--qi-ease),
+		color 0.16s var(--qi-ease),
+		border-color 0.16s var(--qi-ease);
+}
+
+.e-dialog-close:hover {
+	border-color: var(--etext3);
+	background: var(--esurf2);
+	color: var(--etext);
+}
+
+.e-person-modal__close {
+	position: absolute;
+	top: 0.875rem;
+	right: 0.875rem;
+	z-index: 3;
 }
 
 .e-person-modal__hero {

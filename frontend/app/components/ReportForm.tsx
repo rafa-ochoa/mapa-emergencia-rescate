@@ -250,7 +250,7 @@ export default function ReportForm({
             onClick={onCancel}
             data-track="report_modal_close"
             aria-label="Cerrar"
-            className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-700"
+            className="e-dialog-close"
           >
             ×
           </button>
